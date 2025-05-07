@@ -1,0 +1,5 @@
+npm i
+npm i react-icons
+npm install lucide-react #for the navbuttons and 
+npm install react-leaflet leaflet
+npm install axios
