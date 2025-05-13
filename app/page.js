@@ -1,7 +1,7 @@
-import FormularioEvaktrafik from "@/components/form";
+import HomeScreen from "@/components/landing";
 
 export default function Home() {
   return (
-  <FormularioEvaktrafik  />
+  <HomeScreen />
   );
 }

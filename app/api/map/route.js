@@ -1,4 +1,4 @@
-// app/api/map/route/route.js
+// app/api/map/route.js
 import { NextResponse } from "next/server"
 
 export async function POST(request) {

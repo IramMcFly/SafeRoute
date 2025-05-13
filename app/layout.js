@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "EvakTrafik",
-  description: "Innovatec 2025",
+  title: "SafeRoute",
+  description: "Llega seguro a tu destino",
 };
 
 export default function RootLayout({ children }) {
