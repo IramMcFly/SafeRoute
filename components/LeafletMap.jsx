@@ -75,13 +75,13 @@ export default function LeafletMap({
   const [rutas, setRutas] = useState([]);
   const [hoveredRouteIndex, setHoveredRouteIndex] = useState(null);
 
-  // Incidentes simulados
+  // Incidentes simulados con íconos personalizados
   const todosLosIncidentes = [
     {
       tipo: "Robo",
       descripcion: "Robo en Calle José María Mari",
       coords: [28.6445, -106.0875],
-      iconUrl: "https://cdn-icons-png.flaticon.com/512/565/565547.png", // ícono de alerta roja
+      iconUrl: "https://cdn-icons-png.flaticon.com/512/565/565547.png", // ícono de alerta
     },
     {
       tipo: "Choque",
@@ -90,7 +90,6 @@ export default function LeafletMap({
       iconUrl: "https://cdn-icons-png.flaticon.com/512/5956/5956595.png", // ícono de choque
     },
   ];
-
 
   const incidentes = todosLosIncidentes
     .map((inc) => {
@@ -102,15 +101,18 @@ export default function LeafletMap({
     .filter((inc) => inc.distancia <= 5);
 
   useEffect(() => {
+    if (!isValidCoords(userLocation) || !isValidCoords(assistantLocation)) {
+      setRutas([]); // ← Borra la línea si se reinicia la ruta
+      return;
+    }
+
     const fetchRuta = async () => {
-      if (!isValidCoords(userLocation) || !isValidCoords(assistantLocation)) return;
-
-      const coordinates = [
-        [assistantLocation[1], assistantLocation[0]],
-        [userLocation[1], userLocation[0]],
-      ];
-
       try {
+        const coordinates = [
+          [assistantLocation[1], assistantLocation[0]],
+          [userLocation[1], userLocation[0]],
+        ];
+
         const response = await axios.post("/api/map/", {
           coordinates,
           alternative_routes: {
@@ -206,7 +208,6 @@ export default function LeafletMap({
             iconAnchor: [16, 32],
             popupAnchor: [0, -32],
           })}
-
         >
           <Tooltip direction="top" offset={[0, -10]} opacity={0.9}>
             <span className="text-sm font-semibold">
