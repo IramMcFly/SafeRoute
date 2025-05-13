@@ -1,8 +1,8 @@
-// ✅ 1. MapSelector.jsx actualizado con popup animado y formulario completo
 "use client";
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { Menu, X, AlertCircle, Clock } from "lucide-react";
 
 const LeafletMap = dynamic(() => import("@/components/LeafletMap"), { ssr: false });
 
@@ -12,6 +12,9 @@ export default function MapSelector() {
   const [destinoConfirmado, setDestinoConfirmado] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [reportes, setReportes] = useState([]);
+  const [sidebarAbierto, setSidebarAbierto] = useState(false);
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
+  const [historialRutas, setHistorialRutas] = useState([]);
 
   const tipoRuta = "segura";
 
@@ -32,6 +35,17 @@ export default function MapSelector() {
   const confirmarDestino = () => {
     if (destinoTemporal) {
       setDestinoConfirmado(destinoTemporal);
+
+      // Guardar en historial
+      setHistorialRutas((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          origen: ubicacion,
+          destino: destinoTemporal,
+          timestamp: new Date().toLocaleString(),
+        },
+      ]);
     }
   };
 
@@ -57,7 +71,7 @@ export default function MapSelector() {
   };
 
   return (
-    <div className="relative w-full h-[100dvh] bg-[#0e1e2b] text-white">
+    <div className="relative w-full h-[100dvh] bg-[#0e1e2b] text-white overflow-hidden">
       {ubicacion ? (
         <>
           <div className="rounded-xl overflow-hidden shadow-2xl border-2 border-white w-full h-full">
@@ -80,7 +94,6 @@ export default function MapSelector() {
                 Confirmar destino
               </button>
             )}
-
             {destinoConfirmado && (
               <button
                 onClick={() => {
@@ -92,15 +105,50 @@ export default function MapSelector() {
                 Reiniciar ruta
               </button>
             )}
-
-            <button
-              onClick={() => setMostrarModal(true)}
-              className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl shadow-lg font-semibold text-sm w-[170px]"
-            >
-              Reportar incidente
-            </button>
           </div>
 
+          {/* Botón sidebar */}
+          <button
+            onClick={() => setSidebarAbierto(!sidebarAbierto)}
+            className="absolute top-6 left-6 z-[1001] bg-black/60 hover:bg-black/80 p-3 rounded-full shadow-lg"
+          >
+            {sidebarAbierto ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+
+          {/* Sidebar */}
+          <div
+            className={`absolute top-0 left-0 z-[1000] bg-[#1e2e3e] h-full w-64 transform transition-transform duration-300 ${
+              sidebarAbierto ? "translate-x-0" : "-translate-x-full"
+            }`}
+          >
+            <div className="p-6 space-y-4">
+              <h2 className="text-lg font-bold border-b border-white/20 pb-2 mb-2">
+                Opciones
+              </h2>
+
+              <button
+                onClick={() => {
+                  setMostrarModal(true);
+                  setSidebarAbierto(false);
+                }}
+                className="flex items-center gap-2 text-white hover:text-yellow-300"
+              >
+                <AlertCircle className="w-5 h-5" /> Reportar incidente
+              </button>
+
+              <button
+                onClick={() => {
+                  setMostrarHistorial(!mostrarHistorial);
+                  setSidebarAbierto(false);
+                }}
+                className="flex items-center gap-2 text-white hover:text-yellow-300"
+              >
+                <Clock className="w-5 h-5" /> Historial de rutas
+              </button>
+            </div>
+          </div>
+
+          {/* Modal para reporte */}
           {mostrarModal && (
             <div className="absolute inset-0 bg-black bg-opacity-60 flex justify-center items-center z-[1100]">
               <form
@@ -141,6 +189,34 @@ export default function MapSelector() {
                   Enviar reporte
                 </button>
               </form>
+            </div>
+          )}
+
+          {/* Historial modal simple */}
+          {mostrarHistorial && (
+            <div className="absolute inset-0 bg-black bg-opacity-60 flex justify-center items-center z-[1100]">
+              <div className="bg-white text-black rounded-lg p-6 w-[90%] max-w-lg max-h-[80vh] overflow-auto">
+                <h2 className="text-lg font-bold mb-4">Historial de rutas</h2>
+                {historialRutas.length === 0 ? (
+                  <p className="text-sm text-gray-600">No hay rutas registradas aún.</p>
+                ) : (
+                  <ul className="text-sm space-y-3">
+                    {historialRutas.map((ruta) => (
+                      <li key={ruta.id} className="border-b pb-2">
+                        <p><strong>Fecha:</strong> {ruta.timestamp}</p>
+                        <p><strong>Desde:</strong> {ruta.origen.join(", ")}</p>
+                        <p><strong>Hasta:</strong> {ruta.destino.join(", ")}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <button
+                  onClick={() => setMostrarHistorial(false)}
+                  className="mt-4 w-full bg-blue-600 text-white py-2 rounded"
+                >
+                  Cerrar
+                </button>
+              </div>
             </div>
           )}
         </>
