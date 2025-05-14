@@ -107,44 +107,66 @@ export default function MapSelector() {
             )}
           </div>
 
-          {/* Botón sidebar */}
-          <button
-            onClick={() => setSidebarAbierto(!sidebarAbierto)}
-            className="absolute top-6 left-6 z-[1001] bg-black/60 hover:bg-black/80 p-3 rounded-full shadow-lg"
-          >
-            {sidebarAbierto ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
+          {/* Botón para abrir sidebar (solo cuando está cerrado) */}
+          {!sidebarAbierto && (
+            <button
+              onClick={() => setSidebarAbierto(true)}
+              className="absolute top-6 left-6 z-[1001] bg-black/60 hover:bg-black/80 p-3 rounded-full shadow-lg"
+            >
+              <Menu className="w-5 h-5 text-white" />
+            </button>
+          )}
 
-          {/* Sidebar */}
+          {/* Sidebar izquierdo bien organizado */}
           <div
-            className={`absolute top-0 left-0 z-[1000] bg-[#1e2e3e] h-full w-64 transform transition-transform duration-300 ${
-              sidebarAbierto ? "translate-x-0" : "-translate-x-full"
-            }`}
+            className={`absolute top-0 left-0 z-[1000] bg-[#1e2e3e] h-full w-64 flex flex-col justify-between transition-transform duration-300 ${sidebarAbierto ? "translate-x-0" : "-translate-x-full"
+              }`}
           >
-            <div className="p-6 space-y-4">
-              <h2 className="text-lg font-bold border-b border-white/20 pb-2 mb-2">
-                Opciones
-              </h2>
+            {/* Encabezado dentro del sidebar */}
+            <div>
+              <div className="flex items-center justify-between px-6 pt-6">
+                <h2 className="text-lg font-bold text-white">Opciones</h2>
+                <button onClick={() => setSidebarAbierto(false)}>
+                  <X className="w-5 h-5 text-white hover:text-red-400" />
+                </button>
+              </div>
+              <hr className="border-white/20 my-3 mx-6" />
 
-              <button
-                onClick={() => {
-                  setMostrarModal(true);
-                  setSidebarAbierto(false);
-                }}
-                className="flex items-center gap-2 text-white hover:text-yellow-300"
-              >
-                <AlertCircle className="w-5 h-5" /> Reportar incidente
-              </button>
+              {/* Opciones */}
+              <div className="px-6 space-y-4">
+                <button
+                  onClick={() => {
+                    setMostrarModal(true);
+                    setSidebarAbierto(false);
+                  }}
+                  className="flex items-center gap-3 text-white hover:text-yellow-300 transition"
+                >
+                  <AlertCircle className="w-5 h-5" /> Reportar incidente
+                </button>
 
-              <button
-                onClick={() => {
-                  setMostrarHistorial(!mostrarHistorial);
-                  setSidebarAbierto(false);
-                }}
-                className="flex items-center gap-2 text-white hover:text-yellow-300"
-              >
-                <Clock className="w-5 h-5" /> Historial de rutas
-              </button>
+                <button
+                  onClick={() => {
+                    setMostrarHistorial(!mostrarHistorial);
+                    setSidebarAbierto(false);
+                  }}
+                  className="flex items-center gap-3 text-white hover:text-yellow-300 transition"
+                >
+                  <Clock className="w-5 h-5" /> Historial de rutas
+                </button>
+              </div>
+            </div>
+
+            {/* Usuario (parte inferior) */}
+            <div className="p-4 bg-[#162430] border-t border-white/10 flex items-center gap-3">
+              <img
+                src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                alt="avatar"
+                className="w-10 h-10 rounded-full border border-white"
+              />
+              <div>
+                <p className="text-white font-semibold text-sm">Carlos López</p>
+                <p className="text-white text-xs opacity-80">carlos.lopez@example.com</p>
+              </div>
             </div>
           </div>
 

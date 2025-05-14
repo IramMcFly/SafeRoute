@@ -6,11 +6,11 @@ export default function HomeScreen() {
   const router = useRouter();
 
   const handleLogin = () => {
-    router.push("/");
+    router.push("/selector");
   };
 
   const handleRegister = () => {
-    router.push("/");
+    router.push("/selector");
   };
 
   const handleDemo = () => {
@@ -21,7 +21,7 @@ export default function HomeScreen() {
     <div style={styles.container}>
       <div style={styles.logoWrapper}>
         <Image
-          src="/images/shield-check.png"
+          src="/Logo.jpeg"
           alt="SafeRoute Logo"
           width={100}
           height={100}
